@@ -1,20 +1,52 @@
 cff-version: 1.2.0
 message: If you use this software, please cite both the software and the article.
-title: Fully automated deep learning pipeline for L3-level body composition analysis in ADPKD
+title: >-
+  Fully automated deep learning pipeline for L3-level body composition analysis
+  on abdominal CT in autosomal dominant polycystic kidney disease
 abstract: >-
   Training, end-to-end inference, evaluation and figure code for a fully automated
   pipeline that segments the L3 vertebra, selects the L3 inferior endplate and L3
-  middle reference sections, and measures skeletal muscle, visceral fat,
-  subcutaneous fat and intramuscular adipose tissue on abdominal CT.
+  middle reference sections, and measures skeletal muscle, visceral fat, subcutaneous
+  fat and intramuscular adipose tissue on abdominal computed tomography.
 type: software
 license: MIT
 version: 1.0.0
 date-released: 2026-09-20
 authors:
+  - family-names: Lee
+    given-names: Jigang
+    orcid: https://orcid.org/0009-0006-1714-9890
+    affiliation: Department of Software Engineering, Kumoh National Institute of Technology, Gumi, Republic of Korea
+  - family-names: Kim
+    given-names: Yaerim
+    orcid: https://orcid.org/0000-0003-1596-1528
+    affiliation: Department of Internal Medicine, Keimyung University School of Medicine, Daegu, Republic of Korea
+  - family-names: Kim
+    given-names: Kyoung Tae
+    orcid: https://orcid.org/0000-0001-9355-8326
+    affiliation: Department of Rehabilitation Medicine, Keimyung University School of Medicine, Daegu, Republic of Korea
+  - family-names: Kim
+    given-names: Yong Chul
+    orcid: https://orcid.org/0000-0003-3215-8681
+    affiliation: Department of Internal Medicine, Seoul National University Hospital, Seoul, Republic of Korea
+  - family-names: Im
+    given-names: Dha Woon
+    orcid: https://orcid.org/0000-0001-5970-019X
+    affiliation: Department of Internal Medicine, Uijeongbu Eulji Medical Center, Eulji University, Uijeongbu, Republic of Korea
+  - family-names: Park
+    given-names: Hayne Cho
+    orcid: https://orcid.org/0000-0002-1128-3750
+    affiliation: Department of Internal Medicine, Hallym University Kangnam Sacred Heart Hospital, Seoul, Republic of Korea
   - family-names: Kim
     given-names: Youngwoo
     orcid: https://orcid.org/0000-0002-9961-6205
-    # TODO add the remaining authors in the article's order
+    affiliation: Department of Computer Engineering, Kumoh National Institute of Technology, Gumi, Republic of Korea
+    email: ywkim09@gmail.com
+contact:
+  - family-names: Kim
+    given-names: Youngwoo
+    orcid: https://orcid.org/0000-0002-9961-6205
+    email: ywkim09@gmail.com
 preferred-citation:
   type: article
   title: >-
@@ -23,6 +55,18 @@ preferred-citation:
   journal: Clinical Kidney Journal
   year: 2026
   authors:
+    - family-names: Lee
+      given-names: Jigang
+    - family-names: Kim
+      given-names: Yaerim
+    - family-names: Kim
+      given-names: Kyoung Tae
+    - family-names: Kim
+      given-names: Yong Chul
+    - family-names: Im
+      given-names: Dha Woon
+    - family-names: Park
+      given-names: Hayne Cho
     - family-names: Kim
       given-names: Youngwoo
-  # TODO complete once the article has volume, pages and a DOI
+  # TODO fill in once the article has volume, pages and a DOI

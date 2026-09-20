@@ -1,0 +1,30 @@
+# Analysis, detector and figure environment.
+#
+#   conda env create -f environment/analysis.yml
+#   conda activate adpkd-analysis
+#
+# This is the environment that runs the YOLO detectors, every statistical analysis and
+# every figure. Versions are the ones that produced the published results.
+#
+# NOTE ON TORCH: the pinned build is CUDA 12.8. If your driver is older, install torch
+# separately from the matching index, e.g.
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+name: adpkd-analysis
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.19
+  - pip
+  - pip:
+      # detector - 8.4.10 is the version recorded in all ten released checkpoints
+      - ultralytics==8.4.10
+      - torch==2.10.0
+      # numerics and I/O
+      - numpy==2.2.6
+      - scipy==1.15.3
+      - pandas==2.3.3
+      - nibabel==5.3.2
+      # figures and tables
+      - matplotlib==3.10.8
+      - Pillow==12.1.0
+      - openpyxl==3.1.5

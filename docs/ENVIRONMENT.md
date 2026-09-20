@@ -32,7 +32,10 @@ the image path from `$IMAGE`.
 | scipy | 1.15.3 |
 | batchgenerators | 0.25.1 |
 
-`pip install -r requirements-nnunet.txt`
+```bash
+conda env create -f environment/nnunet.yml   # -> adpkd-nnunet
+# or: pip install -r requirements-nnunet.txt
+```
 
 ## Analysis, detector and figure environment
 
@@ -51,7 +54,10 @@ A conda environment on the host. The launcher scripts take its prefix from `$YOL
 | Pillow | 12.1.0 |
 | openpyxl | 3.1.5 |
 
-`pip install -r requirements.txt`
+```bash
+conda env create -f environment/analysis.yml  # -> adpkd-analysis
+# or: pip install -r requirements.txt
+```
 
 > The ultralytics version is worth pinning. All ten released detector checkpoints record
 > **8.4.10** in their metadata, which is the version the published numbers come from. The
@@ -64,6 +70,9 @@ A conda environment on the host. The launcher scripts take its prefix from `$YOL
 | Variable | Used by | Meaning |
 |---|---|---|
 | `ADPKD_ROOT` | all scripts | repository root; defaults to the path resolved from the script's own location |
+| `nnUNet_results` | inference | the unpacked `weights/nnUNet_results` |
+| `nnUNet_raw`, `nnUNet_preprocessed` | inference | unused at inference, but nnU-Net refuses to start unless both point at an existing directory |
+| `NNUNETV2_PREDICT_BIN` | inference | `nnUNetv2_predict` in the nnU-Net environment, when driving it from the analysis environment |
 | `IMAGE` | launcher scripts | container image for the nnU-Net environment |
 | `YOLO_ENV` | launcher scripts | conda prefix for the analysis environment |
 | `ENROOT_RESTRICT_DEV` | launcher scripts | **must be `yes`** — see below |

@@ -1,0 +1,28 @@
+# Segmentation environment (nnU-Net v2).
+#
+#   conda env create -f environment/nnunet.yml
+#   conda activate adpkd-nnunet
+#
+# Kept separate from environment/analysis.yml on purpose: nnU-Net and Ultralytics pull
+# incompatible PyTorch builds. The published results used torch 2.5.1 on CUDA 12.1 here
+# and torch 2.10.0 on CUDA 12.8 in the analysis environment.
+#
+# The original runs used an enroot container holding exactly these versions; the launcher
+# scripts in scripts/ take the image path from $IMAGE. A plain conda environment works
+# too if you invoke the Python entry points directly.
+name: adpkd-nnunet
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.19
+  - pip
+  - pip:
+      # install torch first, from the CUDA 12.1 index:
+      #   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+      - torch==2.5.1
+      - nnunetv2==2.6.2
+      - batchgenerators==0.25.1
+      - SimpleITK==2.5.3
+      - nibabel==5.3.3
+      - numpy==2.2.6
+      - scipy==1.15.3

@@ -12,11 +12,18 @@ Three entry points, depending on what you have.
 
 ```bash
 export ADPKD_ROOT="$PWD"
-export IMAGE=/path/to/nnunet-container.sqsh      # launcher scripts
-export YOLO_ENV=/path/to/conda/envs/ultralytics  # launcher scripts
-export ENROOT_RESTRICT_DEV=yes                   # do not omit
-
 cp config/config.example.json config.json        # edit the paths inside
+
+# inference with the released weights
+export nnUNet_results="$PWD/weights/nnUNet_results"
+export nnUNet_raw="$PWD/weights/nnUNet_results"
+export nnUNet_preprocessed="$PWD/weights/nnUNet_results"
+export NNUNETV2_PREDICT_BIN="$(command -v nnUNetv2_predict)"
+
+# only for the container launchers in scripts/
+export IMAGE=/path/to/nnunet-container.sqsh
+export YOLO_ENV=/path/to/conda/envs/adpkd-analysis
+export ENROOT_RESTRICT_DEV=yes                   # do not omit
 ```
 
 ## Inference only
