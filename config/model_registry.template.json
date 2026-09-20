@@ -1,0 +1,218 @@
+{
+  "schema_version": 4,
+  "fold_policy": "L3 segmentation, both reference-section detectors, and both body-composition segmenters all use the checkpoint of the case's own fold, so no model saw the case it is evaluated on.",
+  "splits": "<repo>/splits/splits_final.json",
+  "folds": {
+    "0": {
+      "l3": {
+        "dataset": "Dataset920_L3Vertebra0917",
+        "config": "3d_fullres",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 0,
+        "checkpoint": "<weights_dir>/fold_0/l3/checkpoint_best.pth"
+      },
+      "sma_inferior": {
+        "dataset": "Dataset917_InferiorSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 0,
+        "checkpoint": "<weights_dir>/fold_0/sma_inferior/checkpoint_best.pth"
+      },
+      "sma_middle": {
+        "dataset": "Dataset918_MiddleSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 0,
+        "checkpoint": "<weights_dir>/fold_0/sma_middle/checkpoint_best.pth"
+      },
+      "yolo_inferior": {
+        "class": "l3_inferior",
+        "fold": 0,
+        "sha256": "a1af911fbc69abf85ab42a2be352cdec60ab2a6f645f82d5393283d9682283ec",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_0/yolo_inferior/best.pt"
+      },
+      "yolo_middle": {
+        "class": "l3_middle",
+        "fold": 0,
+        "sha256": "0003f596ac3fbd3ba8800dd86b5bd99cc065e91da8a7e03ccc7226d135bcc12b",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_0/yolo_middle/best.pt"
+      }
+    },
+    "1": {
+      "l3": {
+        "dataset": "Dataset920_L3Vertebra0917",
+        "config": "3d_fullres",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 1,
+        "checkpoint": "<weights_dir>/fold_1/l3/checkpoint_best.pth"
+      },
+      "sma_inferior": {
+        "dataset": "Dataset917_InferiorSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 1,
+        "checkpoint": "<weights_dir>/fold_1/sma_inferior/checkpoint_best.pth"
+      },
+      "sma_middle": {
+        "dataset": "Dataset918_MiddleSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 1,
+        "checkpoint": "<weights_dir>/fold_1/sma_middle/checkpoint_best.pth"
+      },
+      "yolo_inferior": {
+        "class": "l3_inferior",
+        "fold": 1,
+        "sha256": "5655ea8f49613f04afa112a559ec1fa1f5416febc5125f19997b88fd55d6dca2",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_1/yolo_inferior/best.pt"
+      },
+      "yolo_middle": {
+        "class": "l3_middle",
+        "fold": 1,
+        "sha256": "aeae87ff258ea590a1300da3a7729d505024910eb1a4d345d54d7920d995b62b",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_1/yolo_middle/best.pt"
+      }
+    },
+    "2": {
+      "l3": {
+        "dataset": "Dataset920_L3Vertebra0917",
+        "config": "3d_fullres",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 2,
+        "checkpoint": "<weights_dir>/fold_2/l3/checkpoint_best.pth"
+      },
+      "sma_inferior": {
+        "dataset": "Dataset917_InferiorSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 2,
+        "checkpoint": "<weights_dir>/fold_2/sma_inferior/checkpoint_best.pth"
+      },
+      "sma_middle": {
+        "dataset": "Dataset918_MiddleSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 2,
+        "checkpoint": "<weights_dir>/fold_2/sma_middle/checkpoint_best.pth"
+      },
+      "yolo_inferior": {
+        "class": "l3_inferior",
+        "fold": 2,
+        "sha256": "accf3cde3f25c529343748422e804496315958939136845c3442fa58eccd6d01",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_2/yolo_inferior/best.pt"
+      },
+      "yolo_middle": {
+        "class": "l3_middle",
+        "fold": 2,
+        "sha256": "b5c12548cc8ec45bcf80e9c1acffbe3702bb8f4f87c4542aface0a77c9a0bd11",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_2/yolo_middle/best.pt"
+      }
+    },
+    "3": {
+      "l3": {
+        "dataset": "Dataset920_L3Vertebra0917",
+        "config": "3d_fullres",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 3,
+        "checkpoint": "<weights_dir>/fold_3/l3/checkpoint_best.pth"
+      },
+      "sma_inferior": {
+        "dataset": "Dataset917_InferiorSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 3,
+        "checkpoint": "<weights_dir>/fold_3/sma_inferior/checkpoint_best.pth"
+      },
+      "sma_middle": {
+        "dataset": "Dataset918_MiddleSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 3,
+        "checkpoint": "<weights_dir>/fold_3/sma_middle/checkpoint_best.pth"
+      },
+      "yolo_inferior": {
+        "class": "l3_inferior",
+        "fold": 3,
+        "sha256": "2e7ea35f042e3b16b1c9188dfb84cb2ff530babf3973597f9bcf7f6830dacdad",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_3/yolo_inferior/best.pt"
+      },
+      "yolo_middle": {
+        "class": "l3_middle",
+        "fold": 3,
+        "sha256": "e9d771d78f00cf4dd028239a4e1a69f918a9a0c1d35cf799c7381325fe2755fe",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_3/yolo_middle/best.pt"
+      }
+    },
+    "4": {
+      "l3": {
+        "dataset": "Dataset920_L3Vertebra0917",
+        "config": "3d_fullres",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 4,
+        "checkpoint": "<weights_dir>/fold_4/l3/checkpoint_best.pth"
+      },
+      "sma_inferior": {
+        "dataset": "Dataset917_InferiorSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 4,
+        "checkpoint": "<weights_dir>/fold_4/sma_inferior/checkpoint_best.pth"
+      },
+      "sma_middle": {
+        "dataset": "Dataset918_MiddleSMA300Reann0917",
+        "config": "2d",
+        "trainer": "nnUNetTrainer_500epochs",
+        "plans": "nnUNetPlans",
+        "fold": 4,
+        "checkpoint": "<weights_dir>/fold_4/sma_middle/checkpoint_best.pth"
+      },
+      "yolo_inferior": {
+        "class": "l3_inferior",
+        "fold": 4,
+        "sha256": "aa5806afebdee70db2634b18a8b35b9cf9fb141a1534ec9bd321e674b9c9c491",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_4/yolo_inferior/best.pt"
+      },
+      "yolo_middle": {
+        "class": "l3_middle",
+        "fold": 4,
+        "sha256": "8197d71551134acc906c1031dd91d0f9416eb4a653f944e444654fbd9fe03e0b",
+        "imgsz": 512,
+        "conf": 0.001,
+        "weights": "<weights_dir>/fold_4/yolo_middle/best.pt"
+      }
+    }
+  },
+  "complete": true
+}

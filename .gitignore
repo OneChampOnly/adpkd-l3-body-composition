@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# Imaging data, patient tables and trained weights must never be committed.
+# Paths are anchored with a leading slash so they match the runtime output
+# directories at the repository root, not same-named files inside the code.
+# ---------------------------------------------------------------------------
+/dataset/
+/workspace/
+/work/
+/logs/
+/models/
+/weights/
+/external_inputs/
+/manifests/
+/splits/
+/paper_data/
+/results_final/
+/qc/
+/reannotation/
+
+# Local configuration, written from the templates in config/
+/config.json
+/config/config.json
+/config/model_registry.json
+
+# Pipeline output lands in results/; the generator script itself is tracked.
+/results/*
+!/results/generate_final_results.py
+
+# Supplementary analyses write next to their code.
+/analysis/*/predictions/
+/analysis/*/statistics/
+/analysis/*/manifests/
+/analysis/*/tables/
+/analysis/*/results/
+/analysis/*/work/
+/analysis/*/logs/
+/analysis/z5mm/data/
+/figures/*/*.png
+/figures/*/*.csv
+
+# Data and model file types, wherever they appear.
+*.nii
+*.nii.gz
+*.nrrd
+*.seg.nrrd
+*.dcm
+*.pth
+*.pt
+*.npz
+*.npy
+*.xlsx
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+.venv/

@@ -1,0 +1,28 @@
+{
+  "project_root": "/absolute/path/to/this/repository",
+  "l3_source_root": "/absolute/path/to/L3-vertebra-source-data",
+  "inferior_source_root": "/absolute/path/to/inferior-level-source-data",
+  "middle_source_root": "/absolute/path/to/middle-level-source-data",
+  "splits_json": "/absolute/path/to/this/repository/splits/splits_final.json",
+  "group_priority": [
+    "normal",
+    "anormaly"
+  ],
+  "l3_mask_priority": [
+    "{cid}_l3.nii.gz.nii.seg.nrrd",
+    "{cid}_l3.nii.gz.seg.nrrd",
+    "{cid}_l3.nii.gz"
+  ],
+  "gang2_image": "/absolute/path/to/container-image.sqsh",
+  "yolo_env": "/absolute/path/to/conda/envs/ultralytics",
+  "l3_dataset_id": 920,
+  "l3_dataset_name": "L3Vertebra0917",
+  "nnunet_config": "3d_fullres",
+  "nnunet_trainer": "nnUNetTrainer_500epochs",
+  "nnunet_plans": "nnUNetPlans",
+  "inferior_dataset_id": 917,
+  "inferior_dataset_name": "InferiorSMA300Reann0917",
+  "middle_dataset_id": 918,
+  "middle_dataset_name": "MiddleSMA300Reann0917",
+  "bodycomp_config": "2d"
+}

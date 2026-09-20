@@ -1,0 +1,10 @@
+# Analysis, figure and detector environment (the "analysis env" in docs/ENVIRONMENT.md).
+# Versions are the ones present when the published results were produced.
+numpy==2.2.6
+scipy==1.15.3
+pandas==2.3.3
+matplotlib==3.10.8
+nibabel==5.3.2
+Pillow==12.1.0
+openpyxl==3.1.5
+ultralytics==8.4.10

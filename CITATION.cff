@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: If you use this software, please cite both the software and the article.
+title: Fully automated deep learning pipeline for L3-level body composition analysis in ADPKD
+abstract: >-
+  Training, end-to-end inference, evaluation and figure code for a fully automated
+  pipeline that segments the L3 vertebra, selects the L3 inferior endplate and L3
+  middle reference sections, and measures skeletal muscle, visceral fat,
+  subcutaneous fat and intramuscular adipose tissue on abdominal CT.
+type: software
+license: MIT
+version: 1.0.0
+date-released: 2026-09-20
+authors:
+  - family-names: Kim
+    given-names: Youngwoo
+    orcid: https://orcid.org/0000-0002-9961-6205
+    # TODO add the remaining authors in the article's order
+preferred-citation:
+  type: article
+  title: >-
+    Fully Automated Deep Learning for Third Lumbar-Level Body Composition Analysis
+    on Abdominal Computed Tomography in Autosomal Dominant Polycystic Kidney Disease
+  journal: Clinical Kidney Journal
+  year: 2026
+  authors:
+    - family-names: Kim
+      given-names: Youngwoo
+  # TODO complete once the article has volume, pages and a DOI

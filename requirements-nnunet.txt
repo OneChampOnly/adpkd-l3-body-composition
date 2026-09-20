@@ -1,0 +1,9 @@
+# Segmentation environment. Run inside the container described in docs/ENVIRONMENT.md.
+# torch is pinned to the CUDA 12.1 build actually used; adjust for your driver.
+nnunetv2==2.6.2
+torch==2.5.1
+SimpleITK==2.5.3
+nibabel==5.3.3
+numpy==2.2.6
+scipy==1.15.3
+batchgenerators==0.25.1
