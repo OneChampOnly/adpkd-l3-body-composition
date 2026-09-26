@@ -9,12 +9,16 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import shlex
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# Where nnU-Net looks up <dataset>/<trainer>__<plans>__<config>/fold_k/. With the released
+# weights this is the download directory; pipeline_core.py reads the same variable.
+NNUNET_RESULTS = Path(os.environ.get('NNUNET_RESULTS', ROOT / 'work/nnUNet_results'))
 
 
 def parse_args() -> argparse.Namespace:
@@ -81,7 +85,7 @@ def main() -> None:
             '--slice-mode', args.branches,
             '--nnunet-raw', str(ROOT / 'work/nnUNet_raw'),
             '--nnunet-preprocessed', str(ROOT / 'work/nnUNet_preprocessed'),
-            '--nnunet-results', str(ROOT / 'work/nnUNet_results'),
+            '--nnunet-results', str(NNUNET_RESULTS),
             '--l3-ckpt-path', l3['checkpoint'], '--l3-dataset-name', l3['dataset'],
             '--l3-config', l3['config'], '--l3-fold', str(fold),
             '--l3-trainer', l3['trainer'], '--l3-plans', l3['plans'],

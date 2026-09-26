@@ -67,9 +67,20 @@ def main() -> None:
     args = parse_args()
     registry = json.loads((ROOT / "config/model_registry.json").read_text())
 
-    os.environ["nnUNet_raw"] = str(ROOT / "work/nnUNet_raw")
-    os.environ["nnUNet_preprocessed"] = str(ROOT / "work/nnUNet_preprocessed")
-    os.environ["nnUNet_results"] = str(ROOT / "work/nnUNet_results")
+    # nnUNet_results must hold <dataset>/<trainer>__<plans>__<config>/fold_k/. With the
+    # released weights that is the download directory, so NNUNET_RESULTS overrides the
+    # in-tree default instead of being silently discarded.
+    results_dir = Path(os.environ.get("NNUNET_RESULTS", ROOT / "work/nnUNet_results"))
+    raw_dir = ROOT / "work/nnUNet_raw"
+    preprocessed_dir = ROOT / "work/nnUNet_preprocessed"
+    # nnU-Net refuses to start unless these exist, though inference never reads them.
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    preprocessed_dir.mkdir(parents=True, exist_ok=True)
+    if not results_dir.is_dir():
+        raise FileNotFoundError(f"nnUNet_results not found: {results_dir}")
+    os.environ["nnUNet_raw"] = str(raw_dir)
+    os.environ["nnUNet_preprocessed"] = str(preprocessed_dir)
+    os.environ["nnUNet_results"] = str(results_dir)
 
     for fold in args.folds:
         started = time.time()

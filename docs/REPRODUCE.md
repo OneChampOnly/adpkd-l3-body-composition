@@ -29,7 +29,8 @@ export ENROOT_RESTRICT_DEV=yes                   # do not omit
 ## Inference only
 
 With `weights/` populated ([docs/WEIGHTS.md](WEIGHTS.md)) and `config/model_registry.json`
-written:
+written, and `NNUNET_RESULTS` exported to `weights/nnUNet_results` (see the README quick
+start — without it the runners look in the in-tree `work/nnUNet_results` instead):
 
 ```bash
 python code/16_run_staged_pipeline.py --folds 0 1 2 3 4 --branches inferior middle
@@ -95,16 +96,22 @@ python code/17_evaluate_detector_on_gt_mask.py   # detectors on the manual L3 ma
 ### 4. Supplementary analyses
 
 ```bash
-bash analysis/offset/run_offset_direct.sh         # ±1, ±2 section offsets (Supp. Table 4)
-bash analysis/z5mm/run_z5mm_direct.sh             # uniform 5 mm grid (Supp. Results)
+bash analysis/offset/run_offset_direct.sh         # ±1, ±2 section offsets (Supp. Table 6)
+bash analysis/z5mm/run_z5mm_direct.sh             # uniform 5 mm grid   (condition 2)
+bash analysis/z3mm/run_z3mm_direct.sh             # uniform 3 mm grid   (condition 3)
 bash analysis/public_model/run_public_direct.sh   # needs PUBLIC_MODEL_REPO
 python analysis/external_reference/scripts/01_summarize_clinical_csv.py
 python analysis/sex_stratified/compute_sex_stratified.py
 ```
 
+The two grid runs are the comparison conditions of Table 2. Each resamples every volume
+along z, then re-runs L3 segmentation and detection with the same fold-matched weights;
+they are reported for comparison only, because the detectors were trained at the original
+spacing and a uniform grid adds quantization error of up to half the target spacing.
+
 The offset run at **offset 0** is the segmentation-only condition: the manual reference
-section as input, the fold-matched `checkpoint_best`, one dedicated inference run. Table 2
-and the Table 3 segmentation-only column are built from it, so that every published number
+section as input, the fold-matched `checkpoint_best`, one dedicated inference run. Table 3
+and the Table 4 segmentation-only row are built from it, so that every published number
 comes from the same weights and the same inference route.
 
 ## Tables and figures
@@ -116,7 +123,23 @@ python figures/bland_altman/make_bland_altman_inferior_end2end.py     # Figure 2
 python figures/segmentation_map/make_inferior_segmentation_maps.py \
        --cases figure3:FOLD:CASE_ID figure4:FOLD:CASE_ID              # Figures 3, 4
 python figures/figure_candidates/make_figure_candidates.py            # candidate cases
+
+python figures/supplementary/make_supp_fig1.py \
+       --cases CASE_ID:FOLD:CORONAL_OFFSET CASE_ID:FOLD:CORONAL_OFFSET   # Supp. Figure 1
+python figures/supplementary/make_supp_fig2.py --case CASE_ID --fold N   # Supp. Figure 2
+python figures/supplementary/sweep_coronal.py CASE_ID FOLD [OFFSETS...]  # pick the plane
 ```
+
+Supplementary Figure 1 shows two scans whose reference section was placed on an adjacent
+vertebra. `sweep_coronal.py` renders a contact sheet of candidate coronal planes so the
+locator panel can be cut where the vertebrae are actually visible; the offsets used for the
+published figure were +20 and +25 voxels from the L3 centroid.
+
+Supplementary Figure 2 runs the same body composition model twice on one scan — once on the
+manual reference section, once on the section the pipeline chose — so the cost of a stage-1
+failure is visible with the segmentation model held fixed.
+
+Figures write to `$ADPKD_FIGDIR`, or to `figures_out/` if that is unset.
 
 Figure 2 is the **end-to-end** analysis at the L3 inferior level, read from
 `results/evaluation/per_case_end_to_end.csv` with `branch == "inferior"`.
@@ -132,7 +155,33 @@ python analysis/verification/recompute_best_weights.py   # Tables 2 and 3 from c
 python analysis/verification/recompute_downstream.py     # Supp. Tables 3, 5, 6, 7
 python analysis/verification/verify_sex_and_l3.py        # sex-stratified, exact P values
 bash  analysis/verification/run_ckpt_test.sh             # best vs final checkpoint
+
+python analysis/verification/evaluate_in_original_mm.py  # localization error in original mm
+python analysis/verification/level_misid.py              # 20 mm rule -> Table 2, Supp. Table 2
+python analysis/verification/compare_grids.py            # native vs 5 mm vs 3 mm
+python analysis/verification/l3_body_height.py           # L3 height, the basis of the 20 mm rule
 ```
+
+Run these four in that order: `level_misid.py` consumes the per-case table that
+`evaluate_in_original_mm.py` writes beside it. Together they produce Table 2, Supplementary
+Table 2 and Supplementary Table 3, and the threshold sensitivity check behind the 20 mm
+level-misidentification rule. All four write their CSVs next to themselves, and those CSVs
+are git-ignored because some carry case identifiers.
+
+### A note on table numbers in the verification scripts
+
+`recompute_best_weights.py` and `recompute_downstream.py` predate the final table
+numbering, and their docstrings and printed headings still use the draft numbers. The
+mapping to the published article is:
+
+| Printed heading | Published as |
+|---|---|
+| Table 2 (segmentation-only) | **Table 3** |
+| Supplementary Table 3 (external reference) | **Supplementary Table 5** |
+| Supplementary Tables 5 and 6 (public model) | **Supplementary Tables 7 and 8** |
+| Supplementary Table 7 (sex-stratified) | **Supplementary Table 9** |
+
+The numbers they compute are unaffected; only the labels moved.
 
 `verify_sex_and_l3.py` also checks that the 159:141 weighted averages reproduce the pooled
 values, which catches a mis-joined sex column.

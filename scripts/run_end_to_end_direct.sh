@@ -8,6 +8,9 @@ set -euo pipefail
 ROOT="${ADPKD_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 IMAGE=${IMAGE:?set IMAGE to the container image}
 YOLO_ENV=${YOLO_ENV:?set YOLO_ENV to the ultralytics conda env}
+# Where nnU-Net resolves <dataset>/<trainer>__<plans>__<config>/fold_k/. Point this at the
+# directory the released weights were downloaded into, e.g. weights/nnUNet_results.
+NNUNET_RESULTS=${NNUNET_RESULTS:-${ROOT}/work/nnUNet_results}
 
 gpu_id=${1:?usage: run_end_to_end_direct.sh <gpu_id> <branches> <fold...>}
 branches=${2:?usage: run_end_to_end_direct.sh <gpu_id> <branches> <fold...>}
@@ -24,6 +27,7 @@ enroot start --root --mount /data:/data --mount "${YOLO_ENV}:${YOLO_ENV}" \
   "${IMAGE}" bash -lc "
 set -euo pipefail
 export NUMEXPR_MAX_THREADS=32
+export NNUNET_RESULTS='${NNUNET_RESULTS}'
 export NNUNETV2_PREDICT_BIN=/opt/conda/envs/nnunetv2/bin/nnUNetv2_predict
 export YOLO_CONFIG_DIR='${cache}/ultralytics'
 export TRITON_CACHE_DIR='${cache}/triton'

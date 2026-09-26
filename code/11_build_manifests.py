@@ -6,11 +6,12 @@ Column names match the 0820 pipeline so the ported runner and evaluator work unc
 from __future__ import annotations
 
 import argparse
+import os
 import csv
 import json
 from pathlib import Path
 
-ROOT = Path("${ADPKD_ROOT}")
+ROOT = Path(os.environ.get("ADPKD_ROOT", Path(__file__).resolve().parents[1]))
 DATASET = ROOT / "dataset"
 
 FIELDS = [

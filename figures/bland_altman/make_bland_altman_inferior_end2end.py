@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 
-import os
 import argparse
 import csv
 import math
+import os
 from pathlib import Path
 
 import matplotlib
@@ -14,6 +14,32 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+
+# Vector output: embed TrueType (type 42) rather than type-3 bitmapped glyphs, so the
+# text in the PDF stays selectable, searchable and sharp at any zoom level.
+matplotlib.rcParams["pdf.fonttype"] = 42
+matplotlib.rcParams["ps.fonttype"] = 42
+matplotlib.rcParams["svg.fonttype"] = "none"
+
+# Base point sizes at FONT_SCALE = 1.0; --font-scale multiplies all of them together
+# so the relative hierarchy is preserved.
+FONT = {
+    "panel_title": 16.0,
+    "panel_letter": 22.0,
+    "axis_label": 17.0,
+    "tick": 15.0,
+    "loa_label": 14.0,
+    "suptitle": 22.0,
+}
+FONT_SCALE = 1.0
+# "oneline": '+1.96 SD  5.55' on one row, tucked just above/below its line.
+# "stacked": caption over value, centred on the line, nudged apart when two lines
+#            sit too close to fit. Both are drawn inside the frame.
+LOA_STYLE = "stacked"
+
+
+def fs(key: str) -> float:
+    return FONT[key] * FONT_SCALE
 
 
 ROOT = Path(os.environ.get("ADPKD_ROOT", Path(__file__).resolve().parents[2]))
@@ -26,6 +52,11 @@ TISSUES = {
     "vfat": {"name": "VFAT", "color": "#4056A1", "x_label": "Mean of VFAT area (cm²)", "x_limits": (0.0, 400.0), "x_tick_step": 100.0, "y_tick_step": 5.0},
     "imat": {"name": "IMAT", "color": "#4056A1", "x_label": "Mean of IMAT area (cm²)", "x_limits": (0.0, 20.0), "x_tick_step": 2.5, "y_tick_step": 1.0},
 }
+
+
+# Panel order of the combined 2x2 figure. TISSUES keeps its own order so that the
+# summary and per-case CSVs are unaffected.
+COMBINED_ORDER = ("sma", "vfat", "sfat", "imat")
 
 
 def finite_float(value: str) -> float:
@@ -87,7 +118,49 @@ def calculate_stats(gt: np.ndarray, pred: np.ndarray) -> dict[str, float]:
     }
 
 
-def draw_panel(ax: plt.Axes, gt: np.ndarray, pred: np.ndarray, tissue: str, panel_title: str | None = None) -> dict[str, float]:
+def draw_loa_labels(ax: plt.Axes, stats: dict[str, float]) -> None:
+    """Label the mean and the limits of agreement inside the frame, right-aligned.
+
+    Values carry the typographic minus so they match the "−1.96 SD" caption.
+    """
+    entries = [(stats["loa_upper"], "+1.96 SD"), (stats["bias"], "Mean"),
+               (stats["loa_lower"], "−1.96 SD")]
+    size = fs("loa_label")
+    common = {"ha": "right", "fontsize": size, "zorder": 9,
+              "bbox": {"facecolor": "white", "edgecolor": "none", "pad": 1.0, "alpha": 0.85}}
+
+    if LOA_STYLE == "oneline":
+        # One row per line, tucked clear of it. Half the height of the stacked form,
+        # which is what keeps it from colliding where the limits sit close together.
+        gap = 2.5 * FONT_SCALE
+        for (value, caption), (va, sign) in zip(entries, (("bottom", 1), ("bottom", 1), ("top", -1))):
+            text = f"{caption}  {value:.2f}".replace("-", "\u2212")
+            ax.annotate(text, xy=(0.985, value), xycoords=ax.get_yaxis_transform(),
+                        xytext=(0, sign * gap), textcoords="offset points", va=va, **common)
+        return
+
+    # Stacked: centre each two-line block on its line, then push blocks apart if the
+    # lines are closer together than the text is tall.
+    y0, y1 = ax.get_ylim()
+    height_pt = ax.get_window_extent().height * 72.0 / ax.figure.dpi
+    block_pt = 2 * size * 1.2
+    min_sep = (block_pt + 2.0) * (y1 - y0) / height_pt   # in data units
+    placed = [v for v, _ in entries]                     # upper, mean, lower
+    if placed[0] - placed[1] < min_sep:
+        shift = (min_sep - (placed[0] - placed[1])) / 2.0
+        placed[0] += shift; placed[1] -= shift
+    if placed[1] - placed[2] < min_sep:
+        placed[2] = placed[1] - min_sep
+    half = min_sep / 2.0
+    placed = [min(max(v, y0 + half), y1 - half) for v in placed]
+    for (value, caption), y in zip(entries, placed):
+        text = f"{caption}\n{value:.2f}".replace("-", "\u2212")
+        ax.annotate(text, xy=(0.985, y), xycoords=ax.get_yaxis_transform(),
+                    va="center", linespacing=1.2, **common)
+
+
+def draw_panel(ax: plt.Axes, gt: np.ndarray, pred: np.ndarray, tissue: str, panel_title: str | None = None,
+               corner_letter: str | None = None) -> dict[str, float]:
     info = TISSUES[tissue]
     means = (gt + pred) / 2.0
     differences = pred - gt
@@ -96,10 +169,10 @@ def draw_panel(ax: plt.Axes, gt: np.ndarray, pred: np.ndarray, tissue: str, pane
     ax.scatter(
         means,
         differences,
-        s=14,
+        s=14 * FONT_SCALE**1.5,
         facecolors="white",
         edgecolors=info["color"],
-        linewidths=0.6,
+        linewidths=0.6 * FONT_SCALE,
         alpha=0.82,
     )
 
@@ -111,35 +184,43 @@ def draw_panel(ax: plt.Axes, gt: np.ndarray, pred: np.ndarray, tissue: str, pane
     x_pad = 0.025 * (x_max - x_min)
     y_pad = 0.4 * y_step
     x_plot_min, x_plot_max = x_min - x_pad, x_max + x_pad
-    line_style = {"color": "#202020", "clip_on": True, "solid_capstyle": "butt", "dash_capstyle": "butt"}
-    ax.plot([x_min, x_max], [stats["bias"], stats["bias"]], linewidth=1.05, **line_style)
-    ax.plot([x_min, x_max], [stats["loa_upper"], stats["loa_upper"]], linewidth=0.9, linestyle="--", **line_style)
-    ax.plot([x_min, x_max], [stats["loa_lower"], stats["loa_lower"]], linewidth=0.9, linestyle="--", **line_style)
+    line_style = {"color": "#202020", "solid_capstyle": "butt", "dash_capstyle": "butt"}
+    ax.axhline(stats["bias"], linewidth=1.05 * FONT_SCALE, **line_style)
+    ax.axhline(stats["loa_upper"], linewidth=0.9 * FONT_SCALE, linestyle="--", **line_style)
+    ax.axhline(stats["loa_lower"], linewidth=0.9 * FONT_SCALE, linestyle="--", **line_style)
     ax.set_xlim(x_plot_min, x_plot_max)
     ax.set_xticks(np.arange(x_min, x_max + info["x_tick_step"] / 2.0, info["x_tick_step"]))
     ax.set_ylim(y_min - y_pad, y_max + y_pad)
     ax.set_yticks(np.arange(y_min, y_max + y_step / 2.0, y_step))
-    ax.set_title(panel_title or f"Bland–Altman Plot for {info['name']}", fontsize=12, pad=9)
-    ax.set_xlabel(info["x_label"], fontsize=9.5)
-    ax.set_ylabel("Difference (cm²)", fontsize=9.5)
-    ax.tick_params(axis="both", labelsize=8.5, direction="in")
+    if not corner_letter:
+        ax.set_title(panel_title or f"Bland–Altman Plot for {info['name']}", fontsize=fs("panel_title"), pad=9)
+    ax.set_xlabel(info["x_label"], fontsize=fs("axis_label"))
+    ax.set_ylabel("Difference (cm²)", fontsize=fs("axis_label"))
+    ax.tick_params(axis="both", labelsize=fs("tick"), direction="in",
+                   width=0.8 * FONT_SCALE, length=3.5 * FONT_SCALE)
 
-    label_x = x_max
-    label_style = {
-        "ha": "right",
-        "va": "center",
-        "fontsize": 7.8,
-        "linespacing": 1.25,
-    }
-    ax.text(label_x, stats["loa_upper"], f"+1.96 SD\n{stats['loa_upper']:.2f}", **label_style)
-    ax.text(label_x, stats["bias"], f"Mean\n{stats['bias']:.2f}", **label_style)
-    ax.text(label_x, stats["loa_lower"], f"−1.96 SD\n{stats['loa_lower']:.2f}", **label_style)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    for side in ("left", "bottom"):
-        ax.spines[side].set_linewidth(0.8)
+    draw_loa_labels(ax, stats)
+    for side in ("top", "right", "left", "bottom"):
+        ax.spines[side].set_visible(True)
+        ax.spines[side].set_linewidth(0.8 * FONT_SCALE)
         ax.spines[side].set_color("#222222")
     return stats
+
+
+def place_panel_letters(fig, axes, letters=("A", "B", "C", "D")) -> None:
+    """Put each panel letter at the outer lower-left corner of its subplot.
+
+    The anchor is the axes' tight bounding box, which includes the tick labels and the
+    axis titles, so the letter sits outside the plotting frame at the very corner of the
+    drawn panel rather than inside it. Call this after tight_layout().
+    """
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    inv = fig.transFigure.inverted()
+    for letter, ax in zip(letters, axes):
+        box = ax.get_tightbbox(renderer).transformed(inv)
+        fig.text(box.x0, box.y0, letter, ha="left", va="bottom",
+                 fontsize=fs("panel_letter"), fontweight="bold")
 
 
 def write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, object]]) -> None:
@@ -153,7 +234,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-csv", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--font-scale", type=float, default=1.0,
+                        help="multiply every text size (and the marker/line weights that "
+                             "balance it) by this factor")
+    parser.add_argument("--no-pdf", action="store_true", help="skip the vector PDF output")
+    parser.add_argument("--loa-style", choices=("oneline", "stacked"), default="stacked",
+                        help="layout of the mean / limits-of-agreement labels inside the frame")
     args = parser.parse_args()
+
+    global FONT_SCALE, LOA_STYLE
+    FONT_SCALE = args.font_scale
+    LOA_STYLE = args.loa_style
 
     rows = load_inferior_rows(args.input_csv)
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -169,10 +260,14 @@ def main() -> None:
         fig.tight_layout()
         png = args.output_dir / f"bland_altman_{tissue}.png"
         fig.savefig(png, dpi=300, bbox_inches="tight")
+        if not args.no_pdf:
+            fig.savefig(png.with_suffix(".pdf"), bbox_inches="tight")
         ax.set_title("")
         fig.tight_layout()
         no_title_png = args.output_dir / f"bland_altman_{tissue}_no_title.png"
         fig.savefig(no_title_png, dpi=300, bbox_inches="tight")
+        if not args.no_pdf:
+            fig.savefig(no_title_png.with_suffix(".pdf"), bbox_inches="tight")
         plt.close(fig)
 
         summary_rows.append({
@@ -199,21 +294,32 @@ def main() -> None:
                 "outside_loa": int(difference < stats["loa_lower"] or difference > stats["loa_upper"]),
             })
 
-    fig, axes = plt.subplots(2, 2, figsize=(12.0, 9.0), dpi=200)
-    for label, (ax, tissue) in zip(("A", "B", "C", "D"), zip(axes.flat, TISSUES)):
+    fig, axes = plt.subplots(2, 2, figsize=(14.5, 9.5), dpi=200)
+    for label, (ax, tissue) in zip(("A", "B", "C", "D"), zip(axes.flat, COMBINED_ORDER)):
         gt, pred = values[tissue]
-        draw_panel(ax, gt, pred, tissue, f"{label}. {TISSUES[tissue]['name']}")
-    main_title = fig.suptitle("Inferior GT vs End-to-End Prediction: Bland–Altman Analysis", fontsize=15, y=1.01)
-    fig.tight_layout()
+        draw_panel(ax, gt, pred, tissue, corner_letter=label)  # letter drawn after layout
+    main_title = fig.suptitle("Inferior GT vs End-to-End Prediction: Bland–Altman Analysis",
+                              fontsize=fs("suptitle"), y=1.01)
+    fig.tight_layout(w_pad=5.0, h_pad=3.0)
+    place_panel_letters(fig, list(axes.flat))
     combined = args.output_dir / "bland_altman_combined.png"
     fig.savefig(combined, dpi=300, bbox_inches="tight")
+    if not args.no_pdf:
+        fig.savefig(combined.with_suffix(".pdf"), bbox_inches="tight")
     main_title.remove()
     fig._suptitle = None
-    for ax in axes.flat:
-        ax.set_title("")
+    # Journal variant: the overall title belongs in the legend, but the A-D panel
+    # labels must stay, so this is saved before the panel titles are cleared.
+    fig.tight_layout()
+    panels_only = args.output_dir / "bland_altman_combined_panels_only.png"
+    fig.savefig(panels_only, dpi=300, bbox_inches="tight")
+    if not args.no_pdf:
+        fig.savefig(panels_only.with_suffix(".pdf"), bbox_inches="tight")
     fig.tight_layout()
     combined_no_title = args.output_dir / "bland_altman_combined_no_title.png"
     fig.savefig(combined_no_title, dpi=300, bbox_inches="tight")
+    if not args.no_pdf:
+        fig.savefig(combined_no_title.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
 
     write_csv(

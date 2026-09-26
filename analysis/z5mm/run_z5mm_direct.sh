@@ -5,7 +5,7 @@
 #   ./run_z5mm_direct.sh summarize
 set -euo pipefail
 
-ROOT="${ADPKD_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE=${IMAGE:?set IMAGE to the container image}
 YOLO_ENV=${YOLO_ENV:?set YOLO_ENV to the ultralytics conda env}
 NNUNET_PY=/opt/conda/envs/nnunetv2/bin/python

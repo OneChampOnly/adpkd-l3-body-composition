@@ -82,11 +82,17 @@ environment variables to export. They are:
 
 ```bash
 export ADPKD_ROOT="$PWD"
+export NNUNET_RESULTS="$PWD/weights/nnUNet_results"      # the runners read this one
 export nnUNet_results="$PWD/weights/nnUNet_results"
 export nnUNet_raw="$PWD/weights/nnUNet_results"          # unused at inference, but nnU-Net
 export nnUNet_preprocessed="$PWD/weights/nnUNet_results" # refuses to start without them
 export NNUNETV2_PREDICT_BIN="$(command -v nnUNetv2_predict)"
 ```
+
+`NNUNET_RESULTS` is the one that matters. The runners set nnU-Net's own `nnUNet_results`
+themselves, so exporting only the lowercase name is silently overwritten; the uppercase
+name is what `code/13_run_end_to_end_5fold.py`, `code/16_run_staged_pipeline.py` and the
+launchers in `scripts/` read to find the downloaded weights.
 
 Also copy the config template once: `cp config/config.example.json config.json`.
 
@@ -137,8 +143,8 @@ anywhere in the code. Scripts that need identifiers read them from environment v
 | `scripts/` | training and inference launchers |
 | `environment/` | conda environment files |
 | `config/` | templates for `config.json` and the model registry |
-| `analysis/` | section offset, 5 mm grid, public-model comparison, external reference, sex stratification, verification |
-| `figures/` | figure generation for the article |
+| `analysis/` | section offset, 5 mm and 3 mm grids, public-model comparison, external reference, sex stratification, verification |
+| `figures/` | figure generation for the article and the supplement |
 | `results/` | `generate_final_results.py`, which rebuilds every published table |
 | `tools/` | weight download and registry helper |
 | `docs/` | environment, reproduction, weights, data |

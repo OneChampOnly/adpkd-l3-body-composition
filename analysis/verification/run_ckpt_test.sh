@@ -4,7 +4,7 @@
 # checkpoint_final, then compare both against nnU-Net's own validation export.
 set -euo pipefail
 ROOT="${ADPKD_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
-T=${ROOT}/analysis/ckj_verification/ckpt_test
+T=${ROOT}/analysis/verification/ckpt_test
 IMAGE=${IMAGE:?set IMAGE to the container image}
 export ENROOT_RESTRICT_DEV=yes
 enroot start --root --mount /data:/data \

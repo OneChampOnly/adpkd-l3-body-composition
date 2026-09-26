@@ -7,11 +7,12 @@ with the detector that never saw fold k during training.
 from __future__ import annotations
 
 import argparse
+import os
 import hashlib
 import json
 from pathlib import Path
 
-ROOT = Path("${ADPKD_ROOT}")
+ROOT = Path(os.environ.get("ADPKD_ROOT", Path(__file__).resolve().parents[1]))
 NNUNET_RESULTS = ROOT / "workspace/nnunet/nnUNet_results"
 YOLO_RUNS = ROOT / "yolo/runs"
 

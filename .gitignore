@@ -35,8 +35,13 @@
 /analysis/*/work/
 /analysis/*/logs/
 /analysis/z5mm/data/
+/analysis/z3mm/data/
+# Verification scripts write their tables next to themselves; some carry case ids.
+/analysis/*/*.csv
 /figures/*/*.png
 /figures/*/*.csv
+/figures/*/*.pdf
+/figures_out/
 
 # Data and model file types, wherever they appear.
 *.nii
