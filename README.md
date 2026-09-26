@@ -39,15 +39,15 @@ Details and pip alternatives in [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
 The weights are **not** in this repository — 25 checkpoints, 4.66 GiB. They are packaged
 in nnU-Net's own `nnUNet_results` layout, so unpacking them is the whole installation.
 
-> **Download:** `<MODEL_DOWNLOAD_URL>`
-> *(filled in on publication — see [docs/WEIGHTS.md](docs/WEIGHTS.md))*
+> **Download:** Hugging Face [`OneChampOnly/adpkd-l3-body-composition`](https://huggingface.co/OneChampOnly/adpkd-l3-body-composition) · archived on Zenodo, DOI [10.5281/zenodo.22976872](https://doi.org/10.5281/zenodo.22976872)
 
 ```bash
-python tools/download_weights.py --source <MODEL_DOWNLOAD_URL> --dest weights/
+python tools/download_weights.py --source OneChampOnly/adpkd-l3-body-composition --dest weights/
 python tools/download_weights.py --dest weights/ --verify      # checks SHA256SUMS
 ```
 
-Or download the archive and unpack it so the tree looks exactly like this:
+Or download the per-fold archives from Zenodo and unpack them into `weights/`, so the tree
+looks exactly like this:
 
 ```
 adpkd-l3-body-composition/

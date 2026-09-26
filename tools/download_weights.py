@@ -20,8 +20,8 @@ import json
 import sys
 from pathlib import Path
 
-# Filled in on publication; see docs/WEIGHTS.md.
-DEFAULT_SOURCE = ""
+# Hugging Face mirror of the weights; the archival copy is Zenodo DOI 10.5281/zenodo.22976872.
+DEFAULT_SOURCE = "OneChampOnly/adpkd-l3-body-composition"
 
 TRAINER, PLANS = "nnUNetTrainer_500epochs", "nnUNetPlans"
 SEGMENTERS = {

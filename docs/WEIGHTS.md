@@ -3,8 +3,7 @@
 25 checkpoints, **4.66 GiB** — five cross-validation folds × five models. Too large for
 GitHub, so they are released separately.
 
-> **Download:** `<MODEL_DOWNLOAD_URL>`
-> *(filled in on publication)*
+> **Download:** Hugging Face [`OneChampOnly/adpkd-l3-body-composition`](https://huggingface.co/OneChampOnly/adpkd-l3-body-composition) · archived on Zenodo, DOI [10.5281/zenodo.22976872](https://doi.org/10.5281/zenodo.22976872)
 
 ## What is released
 
@@ -43,7 +42,7 @@ weights/
 ## Setup
 
 ```bash
-python tools/download_weights.py --source <MODEL_DOWNLOAD_URL> --dest weights/
+python tools/download_weights.py --source OneChampOnly/adpkd-l3-body-composition --dest weights/
 python tools/download_weights.py --dest weights/ --verify
 python tools/download_weights.py --dest weights/ --write-registry config/model_registry.json
 ```
@@ -55,26 +54,22 @@ Fold matching is not optional when reproducing the article: each case must be pr
 the models of the fold in which it was a *validation* case. The registry encodes this.
 `code/12_prepare_model_registry.py` regenerates it if you retrain.
 
-## Publishing the weights
+## Where the weights are published
 
-Not yet uploaded. Either host works; the article's Data availability statement should cite
-whichever you pick, with its DOI.
+| Host | Location | Use |
+|---|---|---|
+| Hugging Face | [`OneChampOnly/adpkd-l3-body-composition`](https://huggingface.co/OneChampOnly/adpkd-l3-body-composition) | `download_weights.py --source OneChampOnly/adpkd-l3-body-composition` fetches the tree directly |
+| Zenodo | DOI [10.5281/zenodo.22976872](https://doi.org/10.5281/zenodo.22976872) | archival record to cite; one `.tar.gz` per fold (≈890 MB each) plus `SHA256SUMS` |
 
-**Hugging Face** — convenient for reuse, no size ceiling in practice:
+Both hold the same files. Each Zenodo archive holds one fold's five checkpoints plus the
+`plans.json`/`dataset.json`/`dataset_fingerprint.json` sidecars, so a single fold is
+usable on its own. Unpack whichever you need into the same directory:
 
 ```bash
-huggingface-cli repo create adpkd-l3-body-composition --type model
-huggingface-cli upload <user>/adpkd-l3-body-composition weights/ . --repo-type model
+mkdir -p weights
+for f in adpkd-l3-weights-v1.0.0-fold*.tar.gz; do tar -xzf "$f" -C weights; done
+python tools/download_weights.py --dest weights/ --verify   # expects all five folds
 ```
-
-**Zenodo** — issues a DOI, which journals prefer for archival citation. 50 GB per record
-by default. Upload the tree as a single archive plus `SHA256SUMS`.
-
-A workable arrangement is both: Zenodo for the citable DOI, Hugging Face for day-to-day
-download. Record the DOI in `CITATION.cff` and in the manuscript once minted.
-
-Ship `SHA256SUMS` alongside the weights. `tools/download_weights.py --verify` checks
-against it, which catches truncated downloads — a real risk at ~1 GB per fold.
 
 ## Which checkpoint, and why it matters
 
