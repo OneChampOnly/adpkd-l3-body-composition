@@ -24,7 +24,7 @@ detector and a body-composition segmenter for each of the **L3 inferior endplate
 ### 1. Install
 
 ```bash
-git clone https://github.com/USERNAME/adpkd-l3-body-composition.git
+git clone https://github.com/OneChampOnly/adpkd-l3-body-composition.git
 cd adpkd-l3-body-composition
 
 conda env create -f environment/nnunet.yml      # segmentation  -> adpkd-nnunet
