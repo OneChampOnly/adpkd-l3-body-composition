@@ -17,6 +17,10 @@ authors:
     given-names: Jigang
     orcid: https://orcid.org/0009-0006-1714-9890
     affiliation: Department of Software Engineering, Kumoh National Institute of Technology, Gumi, Republic of Korea
+  - family-names: Yun
+    given-names: DongGeun
+    orcid: https://orcid.org/0009-0001-9283-0006
+    affiliation: Department of Software Engineering, Kumoh National Institute of Technology, Gumi, Republic of Korea
   - family-names: Kim
     given-names: Yaerim
     orcid: https://orcid.org/0000-0003-1596-1528
@@ -57,6 +61,8 @@ preferred-citation:
   authors:
     - family-names: Lee
       given-names: Jigang
+    - family-names: Yun
+      given-names: DongGeun
     - family-names: Kim
       given-names: Yaerim
     - family-names: Kim
